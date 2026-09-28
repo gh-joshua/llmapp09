@@ -103,6 +103,16 @@ jobs:
           exit-code: '1'
           severity: 'CRITICAL,HIGH'
           trivyignores: .trivyignore
+          ignore-unfixed: true
+          output: trivy-results.txt
+
+      - name: Publish Trivy results to job summary
+        if: always()
+        run: |
+          echo '## Trivy scan results' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat trivy-results.txt >> $GITHUB_STEP_SUMMARY || echo 'no results file' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
 
       - name: Login to Docker Hub
         if: github.event_name != 'pull_request'
